@@ -20,8 +20,6 @@ background:#eaeded;
 background:#FFD814;
 padding:12px;
 display:flex;
-flex-wrap:wrap;
-gap:10px;
 justify-content:space-between;
 align-items:center;
 }
@@ -31,58 +29,11 @@ font-size:20px;
 font-weight:bold;
 }
 
-.cartbtn{
-cursor:pointer;
-}
-
-/* SEARCH */
-
 #searchBar{
-padding:8px 10px;
+padding:8px;
 border-radius:6px;
 border:1px solid #ccc;
-width:150px;
-}
-
-/* BANNER */
-
-.banner{
-width:100%;
-height:180px;
-background-size:cover;
-background-position:center;
-animation:slide 10s infinite;
-}
-
-@keyframes slide{
-
-0%{background-image:url('banner1.jpg');}
-33%{background-image:url('banner2.jpg');}
-66%{background-image:url('banner3.jpg');}
-
-}
-
-/* SLIDER */
-
-.slider{
-display:flex;
-overflow-x:auto;
-gap:15px;
-padding:15px;
-background:white;
-}
-
-.slider::-webkit-scrollbar{
-display:none;
-}
-
-.slide{
-min-width:180px;
-background:#fff;
-padding:10px;
-border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-text-align:center;
+width:140px;
 }
 
 /* PRODUCTS */
@@ -96,43 +47,40 @@ padding:15px;
 
 .card{
 background:white;
-padding:12px;
+padding:10px;
 border-radius:10px;
-cursor:pointer;
-transition:0.3s;
-overflow:hidden;
 position:relative;
-}
-
-.card:hover{
-transform:scale(1.04);
-box-shadow:0 6px 20px rgba(0,0,0,0.2);
+cursor:pointer;
 }
 
 .card img{
 width:100%;
 height:160px;
 object-fit:cover;
-transition:transform 0.3s ease;
 }
-
-.card:hover img{
-transform:scale(1.1);
-}
-
-/* HEART */
 
 .heart{
 position:absolute;
-top:10px;
+top:8px;
 right:10px;
 font-size:18px;
 cursor:pointer;
-color:#999;
 }
 
-.heart.active{
+.stock{
 color:red;
+font-size:12px;
+font-weight:bold;
+}
+
+button{
+background:#FFD814;
+border:none;
+padding:10px;
+width:100%;
+margin-top:10px;
+border-radius:6px;
+cursor:pointer;
 }
 
 /* POPUP */
@@ -157,27 +105,18 @@ max-width:320px;
 border-radius:10px;
 }
 
-/* BUTTON */
+/* FAKE ORDER POPUP */
 
-button{
-background:#FFD814;
-border:none;
-padding:10px;
-width:100%;
-margin-top:10px;
-cursor:pointer;
-border-radius:6px;
-}
-
-.star{
-color:gold;
-cursor:pointer;
-}
-
-.stock{
-color:red;
-font-size:12px;
-font-weight:bold;
+.orderPopup{
+position:fixed;
+bottom:20px;
+left:20px;
+background:white;
+padding:10px 15px;
+border-radius:8px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+display:none;
+font-size:13px;
 }
 
 </style>
@@ -185,37 +124,25 @@ font-weight:bold;
 
 <body>
 
-<!-- NAVBAR -->
-
 <div class="nav">
 
 <div class="logo">TRIKY.STORE</div>
 
 <input type="text" id="searchBar" placeholder="Search..." onkeyup="searchProducts()">
 
-<div class="cartbtn" onclick="showCart()">Cart (<span id="cartcount">0</span>)</div>
-
 </div>
 
-<!-- BANNER -->
-
-<div class="banner"></div>
-
-<!-- SLIDER -->
-
-<div class="slider" id="slider"></div>
-
-<!-- PRODUCTS -->
-
 <div class="products" id="products"></div>
-
-<!-- POPUP -->
 
 <div class="popup" id="popup">
 <div class="popupbox" id="popupbox"></div>
 </div>
 
+<div class="orderPopup" id="orderPopup"></div>
+
 <script>
+
+/* PRODUCTS */
 
 const products=[
 
@@ -233,40 +160,19 @@ name:"BEAUTY FACE MASSAGE ICE ROLLER",
 price:50,
 mrp:200,
 img:"product2.jpg",
-stock:5,
-reel:"https://www.instagram.com/triky.store/reel/DV5qIyOEszK/"
-},
-
-{
-name:"Phone Stand",
-price:149,
-mrp:299,
-img:"product3.jpg",
-stock:9
-},
-
-{
-name:"RGB Gaming Light",
-price:399,
-mrp:799,
-img:"product4.jpg",
-stock:6
+stock:5
 }
 
 ];
 
 let cart=[];
-let ratings={};
 
 /* LOAD PRODUCTS */
 
 function loadProducts(){
 
 let grid=document.getElementById("products");
-let slider=document.getElementById("slider");
-
 grid.innerHTML="";
-slider.innerHTML="";
 
 products.forEach((p,i)=>{
 
@@ -280,44 +186,22 @@ grid.innerHTML+=`
 
 <div onclick="openProduct(${i})">
 
-<div style="position:relative">
-
 <img src="${p.img}">
 
-<div style="position:absolute;top:10px;left:10px;background:red;color:white;padding:3px 6px;font-size:12px;border-radius:4px;">
+<div style="background:red;color:white;padding:2px 6px;font-size:12px;position:absolute;top:8px;left:8px;">
 ${discount}% OFF
 </div>
 
-<div style="position:absolute;bottom:10px;left:10px;background:#FFD814;padding:3px 6px;font-size:12px;border-radius:4px;">
-Limited Offer
-</div>
-
-</div>
-
-<h3 style="font-size:14px">${p.name}</h3>
+<h4>${p.name}</h4>
 
 <p>
-<span style="color:red;font-weight:bold;">₹${p.price}</span>
-<span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span>
+<b style="color:red">₹${p.price}</b>
+<span style="text-decoration:line-through;color:gray">₹${p.mrp}</span>
 </p>
 
-<div class="stock">Only ${p.stock} left in stock</div>
-
-<div style="color:gold">★★★★★</div>
+<div class="stock">Only ${p.stock} left</div>
 
 </div>
-
-</div>
-
-`;
-
-slider.innerHTML+=`
-
-<div class="slide">
-
-<img src="${p.img}" width="100%">
-
-<p>${p.name}</p>
 
 </div>
 
@@ -332,7 +216,7 @@ loadProducts();
 /* HEART */
 
 function toggleHeart(el){
-el.classList.toggle("active");
+el.style.color="red";
 }
 
 /* POPUP */
@@ -341,38 +225,34 @@ function openProduct(i){
 
 let p=products[i];
 
-let starHTML="";
-
-for(let s=1;s<=5;s++){
-starHTML+=`<span class="star" onclick="rate('${p.name}',${s})">★</span>`;
-}
+let viewers=Math.floor(Math.random()*7)+3;
 
 let reelButton="";
 
 if(p.reel){
-reelButton=`<button onclick="watchReel('${p.reel}')">🎥 Watch Product Reel</button>`;
+reelButton=`<button onclick="watchReel('${p.reel}')">🎥 Watch Reel</button>`;
 }
 
 document.getElementById("popupbox").innerHTML=`
 
-<h2>${p.name}</h2>
+<h3>${p.name}</h3>
 
 <img src="${p.img}" width="100%">
 
 <p>
-Price: <b>₹${p.price}</b>
-<span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span>
+<b>₹${p.price}</b>
+<span style="text-decoration:line-through;color:gray">₹${p.mrp}</span>
 </p>
 
 <div class="stock">Only ${p.stock} left in stock</div>
 
-<div>Rate: ${starHTML}</div>
+<p style="color:red">🔴 ${viewers} people viewing this</p>
+
+<p>⏳ Offer ends in <span id="timer">10:00</span></p>
 
 ${reelButton}
 
-<button onclick="addCart(${i})">Add to Cart</button>
-
-<button onclick="order('${p.name}')">Order on Instagram</button>
+<button onclick="order('${p.name}',${p.price})">Order on Instagram</button>
 
 <button onclick="closePopup()">Close</button>
 
@@ -380,42 +260,34 @@ ${reelButton}
 
 document.getElementById("popup").style.display="flex";
 
+startTimer();
+
 }
 
-/* CLOSE POPUP */
+/* CLOSE */
 
 function closePopup(){
 document.getElementById("popup").style.display="none";
 }
 
-/* ADD TO CART */
-
-function addCart(i){
-cart.push(products[i]);
-document.getElementById("cartcount").innerText=cart.length;
-alert("Added to cart");
-}
-
-/* SHOW CART */
-
-function showCart(){
-
-let list="Cart:\n";
-
-cart.forEach(p=>{
-list+=p.name+"\n";
-});
-
-alert(list);
-
-recommend();
-
-}
-
 /* INSTAGRAM ORDER */
 
-function order(product){
-window.open("https://instagram.com/triky.store");
+function order(product,price){
+
+let message=
+`Hi TRIKY.STORE 👋
+
+I want to order this product:
+
+Product: ${product}
+Price: ₹${price}
+
+Please send payment details.`;
+
+let link="https://ig.me/m/triky.store?text="+encodeURIComponent(message);
+
+window.open(link);
+
 }
 
 /* WATCH REEL */
@@ -424,30 +296,26 @@ function watchReel(link){
 window.open(link);
 }
 
-/* RATINGS */
+/* TIMER */
 
-function rate(name,val){
-ratings[name]=val;
-alert("You rated "+val+" stars");
+function startTimer(){
+
+let time=600;
+
+let interval=setInterval(()=>{
+
+let min=Math.floor(time/60);
+let sec=time%60;
+
+document.getElementById("timer").innerText=min+":"+(sec<10?"0"+sec:sec);
+
+time--;
+
+if(time<0){
+clearInterval(interval);
 }
 
-/* RECOMMEND */
-
-function recommend(){
-
-if(cart.length==0)return;
-
-let last=cart[cart.length-1].name;
-
-let suggestion=products.find(p=>p.name!==last);
-
-if(suggestion){
-
-setTimeout(()=>{
-alert("Recommended for you: "+suggestion.name);
 },1000);
-
-}
 
 }
 
@@ -455,38 +323,25 @@ alert("Recommended for you: "+suggestion.name);
 
 function searchProducts(){
 
-let query=document.getElementById("searchBar").value.toLowerCase();
+let q=document.getElementById("searchBar").value.toLowerCase();
 
-let productContainer=document.getElementById("products");
+let grid=document.getElementById("products");
 
-productContainer.innerHTML="";
+grid.innerHTML="";
 
 products.forEach((p,i)=>{
 
-if(p.name.toLowerCase().includes(query)){
+if(p.name.toLowerCase().includes(q)){
 
-let discount=Math.round((1-p.price/p.mrp)*100);
+grid.innerHTML+=`
 
-productContainer.innerHTML+=`
-
-<div class="card">
-
-<div class="heart" onclick="toggleHeart(this)">♥</div>
-
-<div onclick="openProduct(${i})">
+<div class="card" onclick="openProduct(${i})">
 
 <img src="${p.img}">
 
-<h3>${p.name}</h3>
+<h4>${p.name}</h4>
 
-<p>
-<span style="color:red;font-weight:bold;">₹${p.price}</span>
-<span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span>
-</p>
-
-<div class="stock">Only ${p.stock} left</div>
-
-</div>
+<p>₹${p.price}</p>
 
 </div>
 
@@ -497,6 +352,31 @@ productContainer.innerHTML+=`
 });
 
 }
+
+/* FAKE ORDER POPUP */
+
+const names=["Rahul","Arjun","Neha","Vikram","Anjali"];
+const cities=["Delhi","Mumbai","Kerala","Bangalore","Chennai"];
+
+setInterval(()=>{
+
+let name=names[Math.floor(Math.random()*names.length)];
+
+let city=cities[Math.floor(Math.random()*cities.length)];
+
+let product=products[Math.floor(Math.random()*products.length)].name;
+
+let box=document.getElementById("orderPopup");
+
+box.innerText=`${name} from ${city} just ordered ${product}`;
+
+box.style.display="block";
+
+setTimeout(()=>{
+box.style.display="none";
+},4000);
+
+},8000);
 
 </script>
 
