@@ -1,328 +1,505 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TRIKY.STORE</title>
 
 <style>
+
 body{
-  margin:0;
-  font-family:Arial;
-  background:#eaeded;
+margin:0;
+font-family:Arial;
+background:#eaeded;
 }
 
 /* NAVBAR */
+
 .nav{
-  background:#FFD814;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+background:#FFD814;
+padding:12px;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+justify-content:space-between;
+align-items:center;
 }
 
 .logo{
-  font-size:24px;
-  font-weight:bold;
+font-size:20px;
+font-weight:bold;
 }
 
 .cartbtn{
-  cursor:pointer;
+cursor:pointer;
 }
 
-/* Search Bar */
+/* SEARCH */
+
 #searchBar{
-  padding:5px 10px;
-  border-radius:5px;
-  border:1px solid #ccc;
-  width:200px;
+padding:8px 10px;
+border-radius:6px;
+border:1px solid #ccc;
+width:150px;
+}
+
+/* BANNER */
+
+.banner{
+width:100%;
+height:180px;
+background-size:cover;
+background-position:center;
+animation:slide 10s infinite;
+}
+
+@keyframes slide{
+
+0%{background-image:url('banner1.jpg');}
+33%{background-image:url('banner2.jpg');}
+66%{background-image:url('banner3.jpg');}
+
 }
 
 /* SLIDER */
+
 .slider{
-  display:flex;
-  overflow-x:auto;
-  gap:20px;
-  padding:20px;
-  background:white;
+display:flex;
+overflow-x:auto;
+gap:15px;
+padding:15px;
+background:white;
 }
 
 .slider::-webkit-scrollbar{
-  display:none;
+display:none;
 }
 
 .slide{
-  min-width:200px;
-  background:#fff;
-  padding:10px;
-  border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-  text-align:center;
+min-width:180px;
+background:#fff;
+padding:10px;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+text-align:center;
 }
 
 /* PRODUCTS */
+
 .products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-  padding:30px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:15px;
+padding:15px;
 }
 
 .card{
-  background:white;
-  padding:15px;
-  border-radius:10px;
-  cursor:pointer;
-  transition:0.3s;
-  overflow:hidden;
+background:white;
+padding:12px;
+border-radius:10px;
+cursor:pointer;
+transition:0.3s;
+overflow:hidden;
+position:relative;
 }
 
 .card:hover{
-  transform:scale(1.05);
-  box-shadow:0 6px 20px rgba(0,0,0,0.2);
+transform:scale(1.04);
+box-shadow:0 6px 20px rgba(0,0,0,0.2);
 }
 
 .card img{
-  width:100%;
-  transition: transform 0.3s ease; /* smooth zoom */
+width:100%;
+height:160px;
+object-fit:cover;
+transition:transform 0.3s ease;
 }
 
 .card:hover img{
-  transform: scale(1.1); /* zoom image slightly */
+transform:scale(1.1);
+}
+
+/* HEART */
+
+.heart{
+position:absolute;
+top:10px;
+right:10px;
+font-size:18px;
+cursor:pointer;
+color:#999;
+}
+
+.heart.active{
+color:red;
 }
 
 /* POPUP */
+
 .popup{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
 }
 
 .popupbox{
-  background:white;
-  padding:20px;
-  width:300px;
-  border-radius:10px;
+background:white;
+padding:20px;
+width:90%;
+max-width:320px;
+border-radius:10px;
 }
 
 /* BUTTON */
+
 button{
-  background:#FFD814;
-  border:none;
-  padding:10px;
-  width:100%;
-  margin-top:10px;
-  cursor:pointer;
+background:#FFD814;
+border:none;
+padding:10px;
+width:100%;
+margin-top:10px;
+cursor:pointer;
+border-radius:6px;
 }
 
 .star{
-  color:gold;
-  cursor:pointer;
+color:gold;
+cursor:pointer;
 }
+
+.stock{
+color:red;
+font-size:12px;
+font-weight:bold;
+}
+
 </style>
 </head>
 
 <body>
 
 <!-- NAVBAR -->
+
 <div class="nav">
-  <div class="logo">TRIKY.STORE</div>
 
-  <!-- Search Bar -->
-  <input type="text" id="searchBar" placeholder="Search products..." onkeyup="searchProducts()">
+<div class="logo">TRIKY.STORE</div>
 
-  <div class="cartbtn" onclick="showCart()">Cart (<span id="cartcount">0</span>)</div>
+<input type="text" id="searchBar" placeholder="Search..." onkeyup="searchProducts()">
+
+<div class="cartbtn" onclick="showCart()">Cart (<span id="cartcount">0</span>)</div>
+
 </div>
 
+<!-- BANNER -->
+
+<div class="banner"></div>
+
 <!-- SLIDER -->
+
 <div class="slider" id="slider"></div>
 
 <!-- PRODUCTS -->
+
 <div class="products" id="products"></div>
 
 <!-- POPUP -->
+
 <div class="popup" id="popup">
-  <div class="popupbox" id="popupbox"></div>
+<div class="popupbox" id="popupbox"></div>
 </div>
 
 <script>
-/* PRODUCTS */
+
 const products=[
-  {
-    name:"MINI SEALING MACHINE",
-    price:100,
-    mrp:200,
-    img:"product1.jpg",
-    reel:"https://www.instagram.com/triky.store/reel/DV5ZlGXEhRI/"
-  },
-  {
-    name:"BEAUTY FACE MASSAGE ICE ROLLER",
-    price:50,
-    mrp:200,
-    img:"product2.jpg",
-    reel:"https://www.instagram.com/triky.store/reel/DV5qIyOEszK/"
-  },
-  {
-    name:"Phone Stand",
-    price:149,
-    mrp:299,
-    img:"product3.jpg"
-  },
-  {
-    name:"RGB Gaming Light",
-    price:399,
-    mrp:799,
-    img:"product4.jpg"
-  }
+
+{
+name:"MINI SEALING MACHINE",
+price:100,
+mrp:200,
+img:"product1.jpg",
+stock:7,
+reel:"https://www.instagram.com/triky.store/reel/DV5ZlGXEhRI/"
+},
+
+{
+name:"BEAUTY FACE MASSAGE ICE ROLLER",
+price:50,
+mrp:200,
+img:"product2.jpg",
+stock:5,
+reel:"https://www.instagram.com/triky.store/reel/DV5qIyOEszK/"
+},
+
+{
+name:"Phone Stand",
+price:149,
+mrp:299,
+img:"product3.jpg",
+stock:9
+},
+
+{
+name:"RGB Gaming Light",
+price:399,
+mrp:799,
+img:"product4.jpg",
+stock:6
+}
+
 ];
 
 let cart=[];
 let ratings={};
 
 /* LOAD PRODUCTS */
+
 function loadProducts(){
-  let grid=document.getElementById("products");
-  let slider=document.getElementById("slider");
 
-  products.forEach((p,i)=>{
-    grid.innerHTML+=`
-      <div class="card" onclick="openProduct(${i})">
-        <div style="position:relative">
-          <img src="${p.img}">
-          <div style="position:absolute;top:10px;left:10px;background:red;color:white;padding:3px 6px;font-size:12px;border-radius:4px;">
-            50% OFF
-          </div>
-          <div style="position:absolute;bottom:10px;left:10px;background:#FFD814;padding:3px 6px;font-size:12px;border-radius:4px;">
-            Limited Offer
-          </div>
-        </div>
-        <h3>${p.name}</h3>
-        <p>
-          <span style="color:red;font-weight:bold;">₹${p.price}</span>
-          <span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span>
-        </p>
-        <div style="color:gold">★★★★★</div>
-      </div>
-    `;
+let grid=document.getElementById("products");
+let slider=document.getElementById("slider");
 
-    slider.innerHTML+=`
-      <div class="slide">
-        <img src="${p.img}" width="100%">
-        <p>${p.name}</p>
-      </div>
-    `;
-  });
+grid.innerHTML="";
+slider.innerHTML="";
+
+products.forEach((p,i)=>{
+
+let discount=Math.round((1-p.price/p.mrp)*100);
+
+grid.innerHTML+=`
+
+<div class="card">
+
+<div class="heart" onclick="toggleHeart(this)">♥</div>
+
+<div onclick="openProduct(${i})">
+
+<div style="position:relative">
+
+<img src="${p.img}">
+
+<div style="position:absolute;top:10px;left:10px;background:red;color:white;padding:3px 6px;font-size:12px;border-radius:4px;">
+${discount}% OFF
+</div>
+
+<div style="position:absolute;bottom:10px;left:10px;background:#FFD814;padding:3px 6px;font-size:12px;border-radius:4px;">
+Limited Offer
+</div>
+
+</div>
+
+<h3 style="font-size:14px">${p.name}</h3>
+
+<p>
+<span style="color:red;font-weight:bold;">₹${p.price}</span>
+<span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span>
+</p>
+
+<div class="stock">Only ${p.stock} left in stock</div>
+
+<div style="color:gold">★★★★★</div>
+
+</div>
+
+</div>
+
+`;
+
+slider.innerHTML+=`
+
+<div class="slide">
+
+<img src="${p.img}" width="100%">
+
+<p>${p.name}</p>
+
+</div>
+
+`;
+
+});
+
 }
 
 loadProducts();
 
-/* PRODUCT POPUP */
-function openProduct(i){
-  let p=products[i];
-  let starHTML="";
-  for(let s=1;s<=5;s++){
-    starHTML+=`<span class="star" onclick="rate('${p.name}',${s})">★</span>`;
-  }
-  let reelButton="";
-  if(p.reel){
-    reelButton=`<button onclick="watchReel('${p.reel}')">🎥 Watch Product Reel</button>`;
-  }
-  document.getElementById("popupbox").innerHTML=`
-    <h2>${p.name}</h2>
-    <img src="${p.img}" width="100%">
-    <p>Price: <b>₹${p.price}</b>
-    <span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span></p>
-    <div>Rate: ${starHTML}</div>
-    ${reelButton}
-    <button onclick="addCart(${i})">Add to Cart</button>
-    <button onclick="order('${p.name}')">Order on Instagram</button>
-    <button onclick="closePopup()">Close</button>
-  `;
-  document.getElementById("popup").style.display="flex";
+/* HEART */
+
+function toggleHeart(el){
+el.classList.toggle("active");
 }
 
+/* POPUP */
+
+function openProduct(i){
+
+let p=products[i];
+
+let starHTML="";
+
+for(let s=1;s<=5;s++){
+starHTML+=`<span class="star" onclick="rate('${p.name}',${s})">★</span>`;
+}
+
+let reelButton="";
+
+if(p.reel){
+reelButton=`<button onclick="watchReel('${p.reel}')">🎥 Watch Product Reel</button>`;
+}
+
+document.getElementById("popupbox").innerHTML=`
+
+<h2>${p.name}</h2>
+
+<img src="${p.img}" width="100%">
+
+<p>
+Price: <b>₹${p.price}</b>
+<span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span>
+</p>
+
+<div class="stock">Only ${p.stock} left in stock</div>
+
+<div>Rate: ${starHTML}</div>
+
+${reelButton}
+
+<button onclick="addCart(${i})">Add to Cart</button>
+
+<button onclick="order('${p.name}')">Order on Instagram</button>
+
+<button onclick="closePopup()">Close</button>
+
+`;
+
+document.getElementById("popup").style.display="flex";
+
+}
+
+/* CLOSE POPUP */
+
 function closePopup(){
-  document.getElementById("popup").style.display="none";
+document.getElementById("popup").style.display="none";
 }
 
 /* ADD TO CART */
+
 function addCart(i){
-  cart.push(products[i]);
-  document.getElementById("cartcount").innerText=cart.length;
-  alert("Added to cart");
+cart.push(products[i]);
+document.getElementById("cartcount").innerText=cart.length;
+alert("Added to cart");
 }
 
 /* SHOW CART */
+
 function showCart(){
-  let list="Cart:\n";
-  cart.forEach(p=>{ list+=p.name+"\n"; });
-  alert(list);
-  recommend();
+
+let list="Cart:\n";
+
+cart.forEach(p=>{
+list+=p.name+"\n";
+});
+
+alert(list);
+
+recommend();
+
 }
 
 /* INSTAGRAM ORDER */
+
 function order(product){
-  let url="https://instagram.com/triky.store";
-  window.open(url);
+window.open("https://instagram.com/triky.store");
 }
 
 /* WATCH REEL */
+
 function watchReel(link){
-  window.open(link);
+window.open(link);
 }
 
 /* RATINGS */
+
 function rate(name,val){
-  ratings[name]=val;
-  alert("You rated "+val+" stars");
+ratings[name]=val;
+alert("You rated "+val+" stars");
 }
 
-/* SIMPLE AI RECOMMENDATION */
+/* RECOMMEND */
+
 function recommend(){
-  if(cart.length==0)return;
-  let last=cart[cart.length-1].name;
-  let suggestion=products.find(p=>p.name!==last);
-  if(suggestion){
-    setTimeout(()=>{ alert("Recommended for you: "+suggestion.name); },1000);
-  }
+
+if(cart.length==0)return;
+
+let last=cart[cart.length-1].name;
+
+let suggestion=products.find(p=>p.name!==last);
+
+if(suggestion){
+
+setTimeout(()=>{
+alert("Recommended for you: "+suggestion.name);
+},1000);
+
 }
 
-/* SEARCH FUNCTION */
-function searchProducts() {
-  let query = document.getElementById('searchBar').value.toLowerCase();
-  let productContainer = document.getElementById('products');
-  productContainer.innerHTML = ''; // clear current products
-
-  products.forEach((p,i)=>{
-    if(p.name.toLowerCase().includes(query)){
-      productContainer.innerHTML += `
-        <div class="card" onclick="openProduct(${i})">
-          <div style="position:relative">
-            <img src="${p.img}">
-            <div style="position:absolute;top:10px;left:10px;background:red;color:white;padding:3px 6px;font-size:12px;border-radius:4px;">
-              50% OFF
-            </div>
-            <div style="position:absolute;bottom:10px;left:10px;background:#FFD814;padding:3px 6px;font-size:12px;border-radius:4px;">
-              Limited Offer
-            </div>
-          </div>
-          <h3>${p.name}</h3>
-          <p>
-            <span style="color:red;font-weight:bold;">₹${p.price}</span>
-            <span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span>
-          </p>
-          <div style="color:gold">★★★★★</div>
-        </div>
-      `;
-    }
-  });
 }
+
+/* SEARCH */
+
+function searchProducts(){
+
+let query=document.getElementById("searchBar").value.toLowerCase();
+
+let productContainer=document.getElementById("products");
+
+productContainer.innerHTML="";
+
+products.forEach((p,i)=>{
+
+if(p.name.toLowerCase().includes(query)){
+
+let discount=Math.round((1-p.price/p.mrp)*100);
+
+productContainer.innerHTML+=`
+
+<div class="card">
+
+<div class="heart" onclick="toggleHeart(this)">♥</div>
+
+<div onclick="openProduct(${i})">
+
+<img src="${p.img}">
+
+<h3>${p.name}</h3>
+
+<p>
+<span style="color:red;font-weight:bold;">₹${p.price}</span>
+<span style="text-decoration:line-through;color:gray;">₹${p.mrp}</span>
+</p>
+
+<div class="stock">Only ${p.stock} left</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+});
+
+}
+
 </script>
 
 </body>
 </html>
+```
